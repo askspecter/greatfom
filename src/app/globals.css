@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────
+   Dime — dark holographic-glass theme.
+   Near-black canvas, iridescent cyan→periwinkle→violet accents,
+   frosted glass surfaces — matched to the glass "D" logo.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --font-display: "Space Grotesk", "Inter", "Segoe UI", system-ui, -apple-system, "DejaVu Sans", Arial, sans-serif;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "DejaVu Sans", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "DejaVu Sans Mono", monospace;
+  --font-logo: "Orbitron", "Space Grotesk", var(--font-display);
+
+  /* Holographic ramp */
+  --holo-1: #8fd0ff; /* cyan-blue   */
+  --holo-2: #a9b8ff; /* periwinkle  */
+  --holo-3: #c9a2ff; /* violet      */
+  --holo-4: #ff9ed6; /* warm rose highlight */
+  --holo: linear-gradient(100deg, var(--holo-1) 0%, var(--holo-2) 40%, var(--holo-3) 72%, var(--holo-4) 100%);
+
+  /* Text */
+  --ink-1: #f2f4ff;
+  --ink-2: #cfd4f2;
+  --ink-3: #aab0d4;
+  --ink-4: #868cb0;
+  --ink-5: #6b7194;
+
+  color-scheme: dark;
+}
+
+/* Techno wordmark for the DIME logotype */
+.wordmark {
+  font-family: var(--font-logo);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  background: var(--holo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Wins over the .text-zinc-* color remaps so the gradient always shows. */
+  -webkit-text-fill-color: transparent;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    @apply antialiased;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    background-color: #05060a;
+    color: var(--ink-2);
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgba(150, 160, 255, 0.28);
+    color: #ffffff;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    color: var(--ink-1);
+  }
+  input, textarea, select {
+    font-family: inherit;
+  }
+}
+
+/* Cinematic backdrop: deep-space glows in the logo's blue/violet/cyan. */
+.cinema-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(52rem 40rem at 10% -8%, rgba(90, 120, 255, 0.20), transparent 55%),
+    radial-gradient(54rem 46rem at 94% 4%, rgba(150, 90, 255, 0.18), transparent 54%),
+    radial-gradient(60rem 54rem at 55% 122%, rgba(70, 200, 255, 0.14), transparent 55%),
+    #05060a;
+}
+/* Subtle film grain lifts the dark canvas without banding. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Signature gradient text + accents */
+.grad-text {
+  background: var(--holo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.grad-rule {
+  background: linear-gradient(90deg, transparent, rgba(150, 160, 255, 0.5), transparent);
+}
+
+@layer components {
+  /* Frosted glass card */
+  .card {
+    @apply rounded-2xl border;
+    border-color: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 40px 90px -55px rgba(90, 120, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .card-hover {
+    @apply transition duration-300;
+  }
+  .card-hover:hover {
+    @apply -translate-y-1;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(160, 175, 255, 0.28);
+    box-shadow: 0 44px 100px -50px rgba(120, 140, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Primary = holographic gradient with dark ink */
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    color: #0a0b16;
+    background: var(--holo);
+    box-shadow: 0 14px 34px -12px rgba(130, 150, 255, 0.65);
+  }
+  .btn-brand:hover:not(:disabled) {
+    filter: brightness(1.06) saturate(1.05);
+    box-shadow: 0 18px 44px -12px rgba(150, 165, 255, 0.8);
+    transform: translateY(-1px);
+  }
+
+  /* Secondary = elevated glass */
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    color: var(--ink-1);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .btn-dark:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(160, 175, 255, 0.3);
+  }
+
+  /* Ghost = hairline glass outline */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    color: var(--ink-2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(160, 175, 255, 0.3);
+    color: var(--ink-1);
+  }
+
+  /* Chip / pill */
+  .chip {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium;
+    color: var(--ink-3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .chip-accent {
+    color: var(--holo-2);
+    border-color: rgba(169, 184, 255, 0.35);
+    background: rgba(169, 184, 255, 0.1);
+  }
+
+  /* Form field */
+  .field {
+    @apply w-full rounded-xl px-4 py-3 text-sm outline-none transition;
+    color: var(--ink-1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .field::placeholder {
+    color: var(--ink-5);
+  }
+  .field:focus {
+    border-color: rgba(150, 165, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(140, 160, 255, 0.16);
+  }
+
+  /* Section eyebrow label */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em];
+    color: var(--ink-4);
+  }
+
+  /* Step number badge */
+  .step-badge {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold;
+    color: var(--holo-2);
+    border: 1px solid rgba(160, 175, 255, 0.28);
+    background: rgba(160, 175, 255, 0.08);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Dark-theme remaps for the light-theme utilities the components
+   still use directly. Keeps every screen consistent without
+   touching each component.
+   ───────────────────────────────────────────────────────────── */
+.text-zinc-900 { color: var(--ink-1) !important; }
+.text-zinc-800 { color: var(--ink-1) !important; }
+.text-zinc-700 { color: var(--ink-2) !important; }
+.text-zinc-600 { color: var(--ink-3) !important; }
+.text-zinc-500 { color: var(--ink-4) !important; }
+.text-zinc-400 { color: var(--ink-5) !important; }
+
+.bg-white,
+.bg-white\/80 { background-color: rgba(255, 255, 255, 0.07) !important; }
+.bg-white\/70 { background-color: rgba(255, 255, 255, 0.06) !important; }
+.bg-white\/60 { background-color: rgba(255, 255, 255, 0.05) !important; }
+.bg-white\/50 { background-color: rgba(255, 255, 255, 0.045) !important; }
+.bg-white\/20 { background-color: rgba(255, 255, 255, 0.03) !important; }
+
+.border-white\/40 { border-color: rgba(255, 255, 255, 0.16) !important; }
+
+/* Dark pills used for active states → light glass so they read on dark. */
+.bg-zinc-900 { background-color: rgba(255, 255, 255, 0.12) !important; }
+.bg-zinc-800 { background-color: rgba(255, 255, 255, 0.09) !important; }
+
+/* Black tints (dividers, track fills) invert to white on dark. */
+.bg-black\/10 { background-color: rgba(255, 255, 255, 0.12) !important; }
+.bg-black\/\[0\.06\] { background-color: rgba(255, 255, 255, 0.09) !important; }
+.hover\:bg-black\/\[0\.05\]:hover { background-color: rgba(255, 255, 255, 0.06) !important; }
+
+/* Warnings / errors kept legible on the dark canvas. */
+.text-red-600 { color: #ff7a90 !important; }
+.text-amber-600 { color: #ffce6a !important; }
+.text-amber-700 { color: #ffd98a !important; }
+
+/* Active pill (nav / connected wallet): accent-tinted glass, white text. */
+.bg-zinc-900.text-white {
+  background-color: rgba(160, 175, 255, 0.18) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(160, 175, 255, 0.4);
+}
+/* Solid accent (bg-pink) is a light holographic tone → use dark ink on it. */
+.bg-pink.text-white { color: #0a0b16 !important; }
+
+/* Marquee row */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee 32s linear infinite;
+}
+/* The track renders the ticker list twice, so translating by -50% loops it
+   seamlessly. These keyframes are defined here (not only in tailwind.config)
+   because the `animate-marquee` utility is never used, so Tailwind would
+   otherwise not emit them and the row would sit still. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* Thin scrollbar inside dropdowns */
+.thin-scroll::-webkit-scrollbar { width: 8px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  html { scroll-behavior: auto; }
+  /* The ticker marquee is core to the page's feel — keep it running. */
+  .marquee-track { animation: marquee 32s linear infinite !important; }
+}
