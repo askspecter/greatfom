@@ -1,4 +1,4 @@
-# 🫆 Dime — tokenize your fomo.family profile
+# 🫆 Dime — coined your @fomo profile
 
 **Dime** turns a [fomo.family](https://fomo.family) profile into a token and launches it on
 **[Pons](https://ponsfamily.com)** — the launchpad on Robinhood Chain — using the **bonding

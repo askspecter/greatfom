@@ -3,7 +3,7 @@ import { ProfileStudio } from "@/components/ProfileStudio";
 
 export const metadata: Metadata = {
   title: "Launch",
-  description: "Tokenize your fomo.family profile and launch it on the Pons bonding curve.",
+  description: "Coined your @fomo profile and launch it on the Pons bonding curve.",
 };
 
 export default function CreatePage({ searchParams }: { searchParams: { handle?: string } }) {
