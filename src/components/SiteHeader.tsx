@@ -11,13 +11,13 @@ export function SiteHeader() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-line bg-ink-900/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+    <header className="sticky top-0 z-40 border-b border-ink-line bg-ink-950/60 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5">
         {/* Brand */}
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <Logo className="h-8 w-8 transition group-hover:scale-105" />
-          <span className="wordmark text-lg text-zinc-900">{SITE.name}</span>
-          <span className="hidden rounded-full border border-ink-line px-2 py-0.5 text-[10px] font-medium text-zinc-500 sm:inline">
+          <Logo className="h-9 w-9 transition group-hover:scale-105" />
+          <span className="wordmark text-xl text-zinc-900">{SITE.name}</span>
+          <span className="hidden rounded-full border border-ink-line px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-zinc-500 sm:inline">
             on {SITE.poweredBy}
           </span>
         </Link>

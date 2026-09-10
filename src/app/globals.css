@@ -3,29 +3,34 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────
-   Dime — dark holographic-glass theme.
-   Near-black canvas, iridescent cyan→periwinkle→violet accents,
-   frosted glass surfaces — matched to the glass "D" logo.
+   Dime — cinematic "aurora" theme.
+   Deep near-black canvas, iridescent cyan→violet→magenta accents,
+   layered glows, hairline glass surfaces, film grain. A premium,
+   high-craft crypto feel.
    ───────────────────────────────────────────────────────────── */
 :root {
-  --font-display: "Space Grotesk", "Inter", "Segoe UI", system-ui, -apple-system, "DejaVu Sans", Arial, sans-serif;
+  --font-display: "Sora", "Space Grotesk", "Segoe UI", system-ui, -apple-system, "DejaVu Sans", Arial, sans-serif;
   --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "DejaVu Sans", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "DejaVu Sans Mono", monospace;
-  --font-logo: "Orbitron", "Space Grotesk", var(--font-display);
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, "DejaVu Sans Mono", monospace;
+  --font-logo: "Sora", var(--font-display);
 
-  /* Holographic ramp */
-  --holo-1: #8fd0ff; /* cyan-blue   */
-  --holo-2: #a9b8ff; /* periwinkle  */
-  --holo-3: #c9a2ff; /* violet      */
-  --holo-4: #ff9ed6; /* warm rose highlight */
-  --holo: linear-gradient(100deg, var(--holo-1) 0%, var(--holo-2) 40%, var(--holo-3) 72%, var(--holo-4) 100%);
+  /* Aurora ramp */
+  --holo-1: #38e5cc; /* cyan     */
+  --holo-2: #7b5cff; /* violet   */
+  --holo-3: #b06bff; /* orchid   */
+  --holo-4: #ff5ca8; /* magenta  */
+  --holo: linear-gradient(105deg, var(--holo-1) 0%, var(--holo-2) 55%, var(--holo-4) 100%);
 
   /* Text */
-  --ink-1: #f2f4ff;
-  --ink-2: #cfd4f2;
-  --ink-3: #aab0d4;
-  --ink-4: #868cb0;
-  --ink-5: #6b7194;
+  --ink-1: #ffffff;
+  --ink-2: #b9bccb;
+  --ink-3: #8f93a8;
+  --ink-4: #7c8098;
+  --ink-5: #5b6078;
+
+  /* Semantic */
+  --up: #4ef0a3;
+  --down: #ff6b81;
 
   color-scheme: dark;
 }
@@ -33,14 +38,12 @@
 /* Techno wordmark for the DIME logotype */
 .wordmark {
   font-family: var(--font-logo);
-  text-transform: uppercase;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: -0.02em;
   background: var(--holo);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* Wins over the .text-zinc-* color remaps so the gradient always shows. */
   -webkit-text-fill-color: transparent;
 }
 
@@ -52,7 +55,7 @@
   body {
     @apply antialiased;
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-    background-color: #05060a;
+    background-color: #05050a;
     color: var(--ink-2);
     min-height: 100dvh;
     width: 100%;
@@ -60,12 +63,12 @@
     overflow-x: hidden;
   }
   ::selection {
-    background: rgba(150, 160, 255, 0.28);
+    background: rgba(123, 92, 255, 0.32);
     color: #ffffff;
   }
   h1, h2, h3 {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     color: var(--ink-1);
   }
   input, textarea, select {
@@ -73,16 +76,17 @@
   }
 }
 
-/* Cinematic backdrop: deep-space glows in the logo's blue/violet/cyan. */
+/* Cinematic backdrop: deep-space aurora glows in cyan/violet/magenta. */
 .cinema-bg {
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(52rem 40rem at 10% -8%, rgba(90, 120, 255, 0.20), transparent 55%),
-    radial-gradient(54rem 46rem at 94% 4%, rgba(150, 90, 255, 0.18), transparent 54%),
-    radial-gradient(60rem 54rem at 55% 122%, rgba(70, 200, 255, 0.14), transparent 55%),
-    #05060a;
+    radial-gradient(48rem 34rem at 12% -6%, rgba(123, 92, 255, 0.30), transparent 60%),
+    radial-gradient(44rem 34rem at 92% -2%, rgba(56, 229, 204, 0.20), transparent 58%),
+    radial-gradient(50rem 40rem at 78% 30%, rgba(255, 92, 168, 0.13), transparent 60%),
+    radial-gradient(60rem 50rem at 30% 120%, rgba(123, 92, 255, 0.14), transparent 60%),
+    #05050a;
 }
 /* Subtle film grain lifts the dark canvas without banding. */
 .grain {
@@ -90,9 +94,9 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.12;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.06;
   mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Signature gradient text + accents */
@@ -104,38 +108,46 @@
   -webkit-text-fill-color: transparent;
 }
 .grad-rule {
-  background: linear-gradient(90deg, transparent, rgba(150, 160, 255, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(123, 92, 255, 0.5), transparent);
+}
+/* Bright-on-dark heading fill (near-white with a cool tint). */
+.ink-sheen {
+  background: linear-gradient(120deg, #ffffff, #c9c2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 @layer components {
   /* Frosted glass card */
   .card {
     @apply rounded-2xl border;
-    border-color: rgba(255, 255, 255, 0.09);
-    background: rgba(255, 255, 255, 0.035);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 40px 90px -55px rgba(90, 120, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015));
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 90px -55px rgba(123, 92, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
   .card-hover {
     @apply transition duration-300;
   }
   .card-hover:hover {
     @apply -translate-y-1;
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(160, 175, 255, 0.28);
-    box-shadow: 0 44px 100px -50px rgba(120, 140, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border-color: rgba(123, 92, 255, 0.30);
+    box-shadow: 0 50px 110px -50px rgba(123, 92, 255, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  /* Primary = holographic gradient with dark ink */
+  /* Primary = aurora gradient with dark ink */
   .btn-brand {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
-    color: #0a0b16;
-    background: var(--holo);
-    box-shadow: 0 14px 34px -12px rgba(130, 150, 255, 0.65);
+    color: #08060f;
+    background: linear-gradient(120deg, var(--holo-1), var(--holo-2) 62%, var(--holo-4));
+    box-shadow: 0 16px 40px -14px rgba(123, 92, 255, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   .btn-brand:hover:not(:disabled) {
     filter: brightness(1.06) saturate(1.05);
-    box-shadow: 0 18px 44px -12px rgba(150, 165, 255, 0.8);
+    box-shadow: 0 20px 48px -14px rgba(123, 92, 255, 1);
     transform: translateY(-1px);
   }
 
@@ -144,12 +156,26 @@
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
     color: var(--ink-1);
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
   .btn-dark:hover:not(:disabled) {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(160, 175, 255, 0.3);
+    border-color: rgba(123, 92, 255, 0.35);
+  }
+
+  /* Glass = same footprint as brand, used as a paired secondary CTA. */
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    color: var(--ink-1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+  }
+  .btn-glass:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(123, 92, 255, 0.35);
+    transform: translateY(-1px);
   }
 
   /* Ghost = hairline glass outline */
@@ -161,7 +187,7 @@
   }
   .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(160, 175, 255, 0.3);
+    border-color: rgba(123, 92, 255, 0.35);
     color: var(--ink-1);
   }
 
@@ -173,9 +199,19 @@
     background: rgba(255, 255, 255, 0.04);
   }
   .chip-accent {
-    color: var(--holo-2);
-    border-color: rgba(169, 184, 255, 0.35);
-    background: rgba(169, 184, 255, 0.1);
+    color: var(--holo-1);
+    border-color: rgba(56, 229, 204, 0.35);
+    background: rgba(56, 229, 204, 0.1);
+  }
+
+  /* Eyebrow pill — aurora-tinted glass */
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs font-bold uppercase;
+    font-family: var(--font-mono);
+    letter-spacing: 0.16em;
+    color: #fff;
+    background: linear-gradient(90deg, rgba(56, 229, 204, 0.14), rgba(123, 92, 255, 0.14));
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
 
   /* Form field */
@@ -189,22 +225,23 @@
     color: var(--ink-5);
   }
   .field:focus {
-    border-color: rgba(150, 165, 255, 0.6);
-    box-shadow: 0 0 0 3px rgba(140, 160, 255, 0.16);
-  }
-
-  /* Section eyebrow label */
-  .eyebrow {
-    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em];
-    color: var(--ink-4);
+    border-color: rgba(123, 92, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(123, 92, 255, 0.16);
   }
 
   /* Step number badge */
   .step-badge {
     @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold;
-    color: var(--holo-2);
-    border: 1px solid rgba(160, 175, 255, 0.28);
-    background: rgba(160, 175, 255, 0.08);
+    color: var(--holo-1);
+    border: 1px solid rgba(56, 229, 204, 0.28);
+    background: rgba(56, 229, 204, 0.08);
+  }
+
+  /* Live status dot */
+  .pulse-dot {
+    @apply inline-block h-2 w-2 shrink-0 rounded-full;
+    background: var(--holo-1);
+    box-shadow: 0 0 0 4px rgba(56, 229, 204, 0.22);
   }
 }
 
@@ -245,32 +282,28 @@
 
 /* Active pill (nav / connected wallet): accent-tinted glass, white text. */
 .bg-zinc-900.text-white {
-  background-color: rgba(160, 175, 255, 0.18) !important;
+  background-color: rgba(123, 92, 255, 0.20) !important;
   color: #ffffff !important;
-  box-shadow: inset 0 0 0 1px rgba(160, 175, 255, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(123, 92, 255, 0.4);
 }
-/* Solid accent (bg-pink) is a light holographic tone → use dark ink on it. */
-.bg-pink.text-white { color: #0a0b16 !important; }
+/* Solid accent (bg-pink) is a light aurora tone → use dark ink on it. */
+.bg-pink.text-white { color: #08060f !important; }
 
-/* Marquee row */
+/* Marquee row (feed ticker + hero ticker) */
 .marquee-track {
   display: flex;
   width: max-content;
   will-change: transform;
-  animation: marquee 32s linear infinite;
+  animation: marquee 40s linear infinite;
 }
-/* The track renders the ticker list twice, so translating by -50% loops it
-   seamlessly. These keyframes are defined here (not only in tailwind.config)
-   because the `animate-marquee` utility is never used, so Tailwind would
-   otherwise not emit them and the row would sit still. */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 .marquee-track:hover { animation-play-state: paused; }
 .marquee-mask {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
 /* Thin scrollbar inside dropdowns */
@@ -281,5 +314,5 @@
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
   html { scroll-behavior: auto; }
   /* The ticker marquee is core to the page's feel — keep it running. */
-  .marquee-track { animation: marquee 32s linear infinite !important; }
+  .marquee-track { animation: marquee 40s linear infinite !important; }
 }

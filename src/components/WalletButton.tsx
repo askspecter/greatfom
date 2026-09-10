@@ -73,7 +73,7 @@ export function WalletButton({ variant = "solid" }: { variant?: "inline" | "soli
                   </>
                 )}
                 <span className="inline-flex items-center gap-1.5 font-mono">
-                  <span className="h-2 w-2 rounded-full bg-pink shadow-[0_0_8px_#ec0e7b]" />
+                  <span className="h-2 w-2 rounded-full bg-pink shadow-[0_0_8px_#7b5cff]" />
                   {account.displayName}
                 </span>
               </button>
