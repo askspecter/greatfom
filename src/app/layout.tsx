@@ -17,20 +17,20 @@ export const metadata: Metadata = {
   description: SITE.description,
   applicationName: SITE.name,
   icons: {
-    icon: "/dime-logo.png",
-    apple: "/dime-logo.png",
+    icon: "/kore-logo.png",
+    apple: "/kore-logo.png",
   },
   openGraph: {
     title: `${SITE.name} · coined your fomo profile`,
     description: SITE.description,
     type: "website",
-    images: ["/dime-logo.png"],
+    images: ["/kore-logo.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} · coined your fomo profile`,
     description: SITE.description,
-    images: ["/dime-logo.png"],
+    images: ["/kore-logo.png"],
     site: SITE.xHandle,
   },
 };
