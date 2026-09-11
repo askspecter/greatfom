@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { TokenFeed } from "@/components/TokenFeed";
+import { KoreTokenCard } from "@/components/KoreTokenCard";
 
 export default function HomePage() {
   return (
@@ -21,6 +22,11 @@ export default function HomePage() {
             <Link href="/docs" className="btn-glass px-7 py-4 text-base">How it works</Link>
           </div>
         </div>
+      </section>
+
+      {/* ── Official $KORE token (live price from Pons) ── */}
+      <section className="mt-10">
+        <KoreTokenCard />
       </section>
 
       {/* ── Trending feed ── */}

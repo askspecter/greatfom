@@ -12,6 +12,9 @@ export const SITE = {
   poweredBy: "Pons",
   ponsUrl: "https://ponsfamily.com",
   fomoUrl: "https://fomo.family",
+  /** Official $KORE token (live on the Pons bonding curve). */
+  koreToken: "0x766c2CFDdC1517320afd2cB46e7Be31f31aB1268",
+  koreSymbol: "KORE",
 } as const;
 
 export const NAV = [
