@@ -27,7 +27,7 @@ export function SiteFooter() {
           <span className="wordmark text-xl text-zinc-900">{SITE.name}</span>
         </div>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-500">
-          Coined your @fomo profile and launch it on the {SITE.poweredBy} bonding curve on{" "}
+          Coined your fomo profile and launch it on the {SITE.poweredBy} bonding curve on{" "}
           {SITE.chain}. Your wallet submits every transaction. {SITE.name} does not custody assets.
         </p>
 

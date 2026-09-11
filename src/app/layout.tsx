@@ -11,7 +11,7 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE.name} · coined your @fomo profile`,
+    default: `${SITE.name} · coined your fomo profile`,
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
@@ -21,14 +21,14 @@ export const metadata: Metadata = {
     apple: "/dime-logo.png",
   },
   openGraph: {
-    title: `${SITE.name} · coined your @fomo profile`,
+    title: `${SITE.name} · coined your fomo profile`,
     description: SITE.description,
     type: "website",
     images: ["/dime-logo.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} · coined your @fomo profile`,
+    title: `${SITE.name} · coined your fomo profile`,
     description: SITE.description,
     images: ["/dime-logo.png"],
     site: SITE.xHandle,

@@ -12,13 +12,13 @@ export default function HomePage() {
           <span className="eyebrow">
             <span className="pulse-dot" /> Profile coins on {SITE.poweredBy} · live
           </span>
-          <h1 className="mt-7 max-w-2xl font-display text-5xl font-extrabold leading-[0.96] tracking-tight text-zinc-900 sm:text-7xl">
-            Coin your <span className="grad-text">@fomo</span>.<br />Own the upside.
+          <h1 className="mt-7 max-w-2xl text-balance font-display text-[2.75rem] font-extrabold leading-[1.02] tracking-tight text-zinc-900 sm:text-7xl">
+            Coined your <span className="grad-text">fomo</span> profile
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-zinc-600 sm:text-lg">
             Turn your fomo.family profile into a tradable token in one signed tap. Kore drafts the
-            coin — name, ticker, avatar, launch thread — and lists it on the {SITE.poweredBy} bonding
-            curve. Non-custodial. Creator fees route straight to you.
+            coin name, ticker, avatar and launch thread, then lists it on the {SITE.poweredBy} bonding
+            curve. Non custodial. Creator fees route straight to you.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link href="/create" className="btn-brand px-7 py-4 text-base">Launch my profile →</Link>
@@ -75,7 +75,7 @@ export default function HomePage() {
               Trending on <span className="grad-text">Kore</span>
             </h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Every coin launched on Kore — its creator fees route to that fomo.family profile’s wallet.
+              Every coin launched on Kore routes its creator fees to that fomo.family profile’s wallet.
             </p>
           </div>
           <Link href="/leaderboard" className="hidden shrink-0 font-mono text-xs uppercase tracking-widest text-pink-soft hover:underline sm:inline">
@@ -109,7 +109,7 @@ export default function HomePage() {
       </section>
 
       <p className="mb-8 mt-10 text-center font-mono text-[11px] uppercase tracking-wider text-zinc-500">
-        {SITE.name} is a third-party interface to {SITE.poweredBy} · Non-custodial · Not financial advice
+        {SITE.name} is a third party interface to {SITE.poweredBy} · Non custodial · Not financial advice
       </p>
     </div>
   );
