@@ -3,8 +3,8 @@
  *
  * Every coined profile gets an AI persona that chats in character on its coin
  * page: it speaks as the tokenized profile, grounded in that profile's public
- * name, ticker, hook and handle. Same provider stack as the profile generator
- * (Bankr LLM Gateway first, Anthropic direct as fallback).
+ * name, ticker, hook and handle. Powered by the Bankr LLM Gateway
+ * (OpenAI-compatible /v1/chat/completions).
  *
  * The profile fields are PUBLIC page data but still user-authored, so the
  * system prompt frames them as data (never instructions) and every field is
@@ -56,19 +56,9 @@ function personaSystem(p: PersonaProfile): string {
     .join("\n");
 }
 
-type Provider = "bankr" | "anthropic";
-
-function pickProvider(): Provider {
-  const explicit = process.env.AI_PROVIDER?.toLowerCase();
-  if (explicit === "bankr" || explicit === "anthropic") return explicit;
-  if (process.env.BANKR_API_KEY) return "bankr";
-  if (process.env.ANTHROPIC_API_KEY) return "anthropic";
-  return "bankr";
-}
-
-/** Whether a persona can even reply (some provider key is configured). */
+/** Whether a persona can even reply (the Bankr key is configured). */
 export function personaConfigured(): boolean {
-  return Boolean(process.env.BANKR_API_KEY?.trim() || process.env.ANTHROPIC_API_KEY?.trim());
+  return Boolean(process.env.BANKR_API_KEY?.trim());
 }
 
 function sanitizeHistory(turns: PersonaTurn[]): PersonaTurn[] {
@@ -86,7 +76,7 @@ export async function personaReply(profile: PersonaProfile, history: PersonaTurn
   if (turns.length === 0 || turns[turns.length - 1].role !== "user") {
     throw new Error("The last message must come from the user.");
   }
-  return pickProvider() === "bankr" ? callBankr(system, turns) : callAnthropic(system, turns);
+  return callBankr(system, turns);
 }
 
 /* ── Bankr LLM Gateway (OpenAI-compatible) ───────────────────────────────── */
@@ -119,29 +109,4 @@ async function callBankr(system: string, turns: PersonaTurn[]): Promise<string> 
   const content = data.choices?.[0]?.message?.content?.trim();
   if (!content) throw new Error("The persona returned an empty reply.");
   return content;
-}
-
-/* ── Anthropic direct (fallback) ─────────────────────────────────────────── */
-
-async function callAnthropic(system: string, turns: PersonaTurn[]): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not set on the server.");
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic({ apiKey });
-  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
-
-  const message = await client.messages.create({
-    model,
-    max_tokens: 240,
-    temperature: 1,
-    system,
-    messages: turns.map((t) => ({ role: t.role, content: t.content })),
-  });
-
-  const text = message.content
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("")
-    .trim();
-  if (!text) throw new Error("The persona returned an empty reply.");
-  return text;
 }
