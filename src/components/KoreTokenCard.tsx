@@ -27,6 +27,12 @@ function fmtPriceUsd(n: number): string {
   if (n >= 0.01) return `$${n.toFixed(4)}`;
   return `$${n.toPrecision(3)}`;
 }
+function fmtAmt(n: number): string {
+  if (n >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
 function short(a: string) {
   return `${a.slice(0, 6)}…${a.slice(-4)}`;
 }
@@ -38,11 +44,12 @@ function short(a: string) {
 export function KoreTokenCard() {
   const ca = SITE.koreToken;
   const [price, setPrice] = useState<Price | null>(null);
+  const [burned, setBurned] = useState<{ burned: number; pct: number } | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    const load = () =>
+    const load = () => {
       fetch(`/api/v2/prices?tokens=${ca}`, { cache: "no-store" })
         .then((r) => r.json())
         .then((d) => {
@@ -51,6 +58,14 @@ export function KoreTokenCard() {
           if (p && typeof p.marketCapEth === "number") setPrice(p as Price);
         })
         .catch(() => {});
+      fetch(`/api/kore/burned?token=${ca}`, { cache: "no-store" })
+        .then((r) => r.json())
+        .then((d) => {
+          if (cancelled) return;
+          if (d && typeof d.burned === "number") setBurned({ burned: d.burned, pct: d.pct ?? 0 });
+        })
+        .catch(() => {});
+    };
     load();
     const id = setInterval(load, 15_000);
     return () => {
@@ -98,7 +113,7 @@ export function KoreTokenCard() {
         </div>
 
         {/* live stats */}
-        <div className="ml-auto flex items-center gap-6">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-x-6 gap-y-3">
           <div className="text-right">
             <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">Market cap</div>
             <div className="ink-sheen font-display text-2xl font-extrabold">{mc}</div>
@@ -106,6 +121,20 @@ export function KoreTokenCard() {
           <div className="hidden text-right sm:block">
             <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">Price</div>
             <div className="font-display text-2xl font-extrabold text-zinc-900">{priceUsd ?? "—"}</div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center justify-end gap-1.5 font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+              <span className="pulse-dot" style={{ background: "#ff8a4c", boxShadow: "0 0 0 4px rgba(255,138,76,0.22)" }} />
+              Burned
+            </div>
+            <div className="font-display text-2xl font-extrabold" style={{ color: "#ff9d5c" }}>
+              {burned ? fmtAmt(burned.burned) : "—"}
+              {burned && burned.pct > 0 && (
+                <span className="ml-1 align-middle font-mono text-xs text-zinc-500">
+                  {burned.pct >= 0.01 ? burned.pct.toFixed(2) : burned.pct.toFixed(3)}%
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
