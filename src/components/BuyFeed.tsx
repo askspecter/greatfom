@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { resolveLogo, gradientFor } from "@/lib/img";
 
 interface BuyItem {
   token: string | null;
@@ -105,19 +106,20 @@ export function BuyFeed() {
         const isNew = fresh.has(keyOf(b));
         const amount = b.amountUsd != null ? fmtUsd(b.amountUsd) : fmtEth(b.amountQuote);
         const buyer = b.buyerName || short(b.buyer);
+        const avatar = resolveLogo(b.buyerAvatar);
+        const logo = resolveLogo(b.logo);
+        const sym = (b.symbol || "TOKEN").toUpperCase();
         const inner = (
           <div
             className={`card card-hover flex items-center gap-3.5 p-4 ${isNew ? "animate-fade-up ring-1 ring-up/40" : ""}`}
           >
             {/* buyer avatar */}
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white/[0.06]">
-              {b.buyerAvatar ? (
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full">
+              {avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={b.buyerAvatar} alt={buyer} className="h-full w-full object-cover" />
+                <img src={avatar} alt={buyer} className="h-full w-full object-cover" />
               ) : (
-                <span className="grad-text flex h-full w-full items-center justify-center font-display text-sm font-bold">
-                  {(buyer[0] ?? "0").toUpperCase()}
-                </span>
+                <span className="block h-full w-full" style={{ background: gradientFor(b.buyer) }} />
               )}
             </div>
 
@@ -142,11 +144,18 @@ export function BuyFeed() {
             </div>
 
             {/* token logo */}
-            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-ink-line bg-white/[0.04]">
-              {b.logo ? (
+            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-ink-line">
+              {logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={b.logo} alt={b.symbol ?? "token"} className="h-full w-full object-cover" />
-              ) : null}
+                <img src={logo} alt={sym} className="h-full w-full object-cover" />
+              ) : (
+                <span
+                  className="flex h-full w-full items-center justify-center font-display text-sm font-bold text-[#08060f]"
+                  style={{ background: gradientFor(b.symbol || b.token || "t") }}
+                >
+                  {sym.slice(0, 1)}
+                </span>
+              )}
             </div>
           </div>
         );

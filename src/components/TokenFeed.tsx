@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { resolveLogo, gradientFor } from "@/lib/img";
 
 /** A profile coin launched through Kore (from /api/launches). */
 interface LaunchItem {
@@ -112,9 +113,9 @@ export function TokenFeed({ limit = 48 }: { limit?: number }) {
 
   if (ranked === null) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="card h-32 animate-pulse" />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="card aspect-[3/4] animate-pulse" />
         ))}
       </div>
     );
@@ -130,54 +131,63 @@ export function TokenFeed({ limit = 48 }: { limit?: number }) {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {ranked.map((it, rank) => {
         const mc = mcaps[it.token.toLowerCase()];
+        const logo = resolveLogo(it.logo);
+        const sym = (it.symbol || it.name || "◈").toUpperCase();
         return (
-          <div key={it.token} className="card card-hover flex flex-col p-4 transition-all duration-500">
-            <Link href={`/launch/${it.token}`} className="flex items-center gap-3">
-              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-ink-line bg-white">
-                {it.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={it.logo} alt={it.symbol ?? "token"} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="text-lg">🫥</span>
-                )}
-                {rank < 3 && (
-                  <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white">
-                    {rank + 1}
-                  </span>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="truncate font-bold text-zinc-900">{it.name || short(it.token)}</div>
-                {it.symbol && <div className="font-mono text-xs text-pink">${it.symbol}</div>}
-              </div>
-              {mc && (
-                <div className="shrink-0 text-right">
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-500">MC</div>
-                  <div className="text-sm font-bold text-zinc-900">{fmtMc(mc)}</div>
+          <Link
+            key={it.token}
+            href={`/launch/${it.token}`}
+            className="card card-hover flex flex-col overflow-hidden"
+          >
+            {/* square token art */}
+            <div className="relative aspect-square w-full overflow-hidden">
+              {logo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logo} alt={sym} className="h-full w-full object-cover" />
+              ) : (
+                <div
+                  className="flex h-full w-full items-center justify-center font-display text-4xl font-black text-[#08060f]"
+                  style={{ background: gradientFor(it.symbol || it.token) }}
+                >
+                  {sym.slice(0, 1)}
                 </div>
               )}
-            </Link>
-
-            <div className="mt-3 flex items-center justify-between text-[11px] text-zinc-500">
-              {it.handle ? (
-                <a
-                  href={`https://fomo.family/${it.handle.replace(/^@+/, "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="truncate font-medium text-pink hover:underline"
-                  title="Fee recipient · fomo.family profile"
-                >
-                  @{it.handle.replace(/^@+/, "")}
-                </a>
-              ) : (
-                <span className="font-mono">by {short(it.deployer)}</span>
+              {rank < 3 && (
+                <span className="absolute left-2 top-2 flex h-6 w-6 items-center justify-center rounded-lg bg-black/55 font-mono text-[11px] font-bold text-white backdrop-blur">
+                  {rank + 1}
+                </span>
               )}
-              <span>{ago(it.createdAt)}</span>
             </div>
-          </div>
+
+            {/* meta */}
+            <div className="flex flex-1 flex-col p-3.5">
+              <div className="truncate font-display text-[15px] font-bold text-zinc-900">
+                {it.name || short(it.token)}
+              </div>
+              <div className="truncate font-mono text-xs text-pink-soft">${sym}</div>
+
+              <div className="mt-3 flex items-end justify-between">
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">MC</div>
+                  <div className="font-display text-base font-extrabold text-zinc-900">
+                    {mc ? fmtMc(mc) : "—"}
+                  </div>
+                </div>
+                <span className="pb-0.5 font-mono text-[11px] text-zinc-500">{ago(it.createdAt)}</span>
+              </div>
+
+              <div className="mt-2 truncate border-t border-ink-line pt-2 text-[11px] text-zinc-500">
+                {it.handle ? (
+                  <span className="font-medium text-pink-soft">@{it.handle.replace(/^@+/, "")}</span>
+                ) : (
+                  <span className="font-mono">{short(it.deployer)}</span>
+                )}
+              </div>
+            </div>
+          </Link>
         );
       })}
     </div>
