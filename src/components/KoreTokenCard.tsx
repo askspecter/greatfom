@@ -151,7 +151,8 @@ export function KoreTokenCard() {
           <span className="text-zinc-900">{short(ca)}</span>
           <span className="text-pink-soft">{copied ? "copied ✓" : "copy"}</span>
         </button>
-        <Link href={`/launch/${ca}`} className="btn-brand ml-auto !py-2.5">Trade ${SITE.koreSymbol} →</Link>
+        <Link href="/kore" className="btn-glass ml-auto !py-2.5">Holder dashboard →</Link>
+        <Link href={`/launch/${ca}`} className="btn-brand !py-2.5">Trade ${SITE.koreSymbol} →</Link>
       </div>
     </div>
   );
