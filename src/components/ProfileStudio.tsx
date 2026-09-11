@@ -50,6 +50,14 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
   const [detectError, setDetectError] = useState<string | null>(null);
   const [feeWallet, setFeeWallet] = useState<`0x${string}` | undefined>(undefined);
 
+  // ── Resolved X profile (when coining from X) ──
+  const [xProfile, setXProfile] = useState<{
+    handle: string;
+    displayName: string;
+    verified: boolean;
+    followers: number | null;
+  } | null>(null);
+
   // Editable launch fields
   const [name, setName] = useState("");
   const [ticker, setTicker] = useState("");
@@ -99,6 +107,7 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
     }
     setDetectError(null);
     setDetecting(true);
+    setXProfile(null);
     try {
       const res = await fetch(`/api/fomo/${encodeURIComponent(h)}`, { cache: "no-store" });
       const data = await res.json();
@@ -145,16 +154,42 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
     }
     setDetectError(null);
     setDetecting(true);
+    setFomo(null);
+    setFeeWallet(undefined); // X carries no on-chain wallet → fees go to connected wallet
     try {
-      setFomo(null);
-      setFeeWallet(undefined);
-      setAvatar(`https://unavatar.io/x/${encodeURIComponent(h)}`);
-      setDisplayName((prev) => prev || `@${h}`);
-      setName((prev) => prev || h);
-      setDescription((prev) => prev || `@${h} on X, coined on Kore.`);
-      setTwitter((prev) => prev || `https://x.com/${h}`);
-    } catch {
-      setDetectError("Couldn't load that X profile.");
+      // Try the official X API first (real name + verified badge). Falls back to
+      // an avatar-only path when the server has no X_BEARER_TOKEN configured.
+      const res = await fetch(`/api/x/${encodeURIComponent(h)}`, { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Couldn't load that X profile.");
+
+      if (data.configured && data.profile) {
+        const p = data.profile as {
+          handle: string;
+          displayName: string;
+          bio: string;
+          avatar: string;
+          verified: boolean;
+          followers: number | null;
+        };
+        setXProfile({ handle: p.handle, displayName: p.displayName, verified: p.verified, followers: p.followers });
+        setAvatar(p.avatar || `https://unavatar.io/x/${encodeURIComponent(h)}`);
+        setDisplayName((prev) => prev || p.displayName);
+        setName((prev) => prev || p.displayName);
+        if (p.bio) setDescription((prev) => prev || p.bio.split("\n")[0].slice(0, 280));
+        setTwitter((prev) => prev || `https://x.com/${p.handle}`);
+      } else {
+        // Avatar-only fallback (no X API key on the server).
+        setXProfile({ handle: h, displayName: `@${h}`, verified: false, followers: null });
+        setAvatar(`https://unavatar.io/x/${encodeURIComponent(h)}`);
+        setDisplayName((prev) => prev || `@${h}`);
+        setName((prev) => prev || h);
+        setDescription((prev) => prev || `@${h} on X, coined on Kore.`);
+        setTwitter((prev) => prev || `https://x.com/${h}`);
+      }
+    } catch (err) {
+      setXProfile(null);
+      setDetectError(err instanceof Error ? err.message : "Couldn't load that X profile.");
     } finally {
       setDetecting(false);
     }
@@ -281,6 +316,22 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
                 No EVM wallet on this profile, so fees fall back to your connected wallet.
               </p>
             )}
+          </div>
+        )}
+        {source === "x" && xProfile && (
+          <div className="mt-3 rounded-xl border border-ink-line bg-white/50 p-3 text-xs">
+            <div className="flex items-center gap-1.5 font-semibold text-zinc-700">
+              @{xProfile.handle}
+              {xProfile.verified && <span className="text-pink" title="Verified on X">✓</span>}
+              {xProfile.followers != null && (
+                <span className="ml-auto font-normal text-zinc-500">
+                  {Intl.NumberFormat("en", { notation: "compact" }).format(xProfile.followers)} followers
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-amber-600">
+              X profiles have no on-chain wallet, so creator fees route to your connected wallet.
+            </p>
           </div>
         )}
 
