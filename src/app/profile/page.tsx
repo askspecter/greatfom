@@ -88,7 +88,7 @@ export default function ProfilePage() {
               </ul>
             )}
             <p className="mt-3 text-[11px] text-zinc-400">
-              This list is drawn from launches made through {`Dime`} with image storage
+              This list is drawn from launches made through {`Kore`} with image storage
               configured. On-chain, your launches are always yours regardless of this list.
             </p>
           </section>

@@ -2,7 +2,7 @@ import type AnthropicSDK from "@anthropic-ai/sdk";
 import { profilePackageSchema, type ProfilePackage } from "./schema";
 
 /**
- * Dime's profile-package generator.
+ * Kore's profile-package generator.
  *
  * Turns a fomo.family profile (handle + optional display name / bio / vibe)
  * into a launch-ready PROFILE token package for Pons v2.
@@ -20,7 +20,7 @@ export interface ProfileSeed {
   vibe?: string;
 }
 
-const CREATIVE_RULES = `You are the creative engine of Dime, an app that tokenizes a person's fomo.family profile and launches it on the Pons bonding curve (Robinhood Chain).
+const CREATIVE_RULES = `You are the creative engine of Kore, an app that tokenizes a person's fomo.family profile and launches it on the Pons bonding curve (Robinhood Chain).
 Given a fomo.family profile, design a COMPLETE, launch-ready PROFILE COIN package for that person.
 
 - name: the profile coin name — usually the person's display name or handle, catchy and human. Max 40 chars.

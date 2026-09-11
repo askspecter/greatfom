@@ -33,7 +33,7 @@ function fmtMc(m?: McInfo): string {
 
 /**
  * The floating 3D showcase card in the hero. Displays the current top profile
- * coin on Dime (ranked by market cap) with real, non-fabricated facts — market
+ * coin on Kore (ranked by market cap) with real, non-fabricated facts — market
  * cap, ticker, network. The chart line is an ambient decoration, not price data.
  */
 export function HeroShowcase() {

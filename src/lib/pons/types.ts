@@ -1,5 +1,5 @@
 /**
- * Dime uses a single Pons launch model: every profile launches on the Pons
+ * Kore uses a single Pons launch model: every profile launches on the Pons
  * bonding curve. The version type is kept (as a fixed literal) so records and
  * the engine share one vocabulary with Pons, but there is no v1 path here.
  */

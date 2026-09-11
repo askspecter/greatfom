@@ -6,7 +6,7 @@ import { Logo } from "./Logo";
 
 /**
  * Mobile bottom tab bar — the app-style navigation matching fomo.family's
- * layout: Home, Explore, Dime (center), Leaderboard, Create.
+ * layout: Home, Explore, Kore (center), Leaderboard, Create.
  * Desktop keeps the top SiteHeader, so this is hidden from md up.
  */
 type Tab = { href: string; label: string; icon: React.ReactNode };
@@ -47,8 +47,8 @@ export function BottomNav() {
           </Link>
         ))}
 
-        {/* Center: elevated Dime logo */}
-        <Link href="/" aria-label="Dime home" className="flex flex-1 justify-center">
+        {/* Center: elevated Kore logo */}
+        <Link href="/" aria-label="Kore home" className="flex flex-1 justify-center">
           <span
             className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl transition ${
               pathname === "/" ? "ring-2 ring-[#a9b8ff]/60" : ""

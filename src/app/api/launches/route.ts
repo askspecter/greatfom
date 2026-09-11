@@ -8,7 +8,7 @@ export const revalidate = 0;
 
 const KEY = "fomo:launches";
 
-/** A profile coin launched through Dime (always Pons). */
+/** A profile coin launched through Kore (always Pons). */
 export interface LaunchRecord {
   token: string;
   curve?: string;
@@ -54,7 +54,7 @@ export async function GET(req: Request) {
   return NextResponse.json({ items });
 }
 
-/** POST /api/launches - record a profile launch made through Dime. */
+/** POST /api/launches - record a profile launch made through Kore. */
 export async function POST(req: Request) {
   const kv = getKv();
   if (!kv) return NextResponse.json({ error: "Storage not configured." }, { status: 503 });
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
 
 /** The message a creator signs to remove one of their launches from the feed. */
 function removeMessage(token: string): string {
-  return `Remove ${token.toLowerCase()} from the Dime feed`;
+  return `Remove ${token.toLowerCase()} from the Kore feed`;
 }
 
 /**

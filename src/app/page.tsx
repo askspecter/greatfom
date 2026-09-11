@@ -16,7 +16,7 @@ export default function HomePage() {
             Coin your <span className="grad-text">@fomo</span>.<br />Own the upside.
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-zinc-600 sm:text-lg">
-            Turn your fomo.family profile into a tradable token in one signed tap. Dime drafts the
+            Turn your fomo.family profile into a tradable token in one signed tap. Kore drafts the
             coin — name, ticker, avatar, launch thread — and lists it on the {SITE.poweredBy} bonding
             curve. Non-custodial. Creator fees route straight to you.
           </p>
@@ -72,10 +72,10 @@ export default function HomePage() {
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-3xl font-extrabold tracking-tight text-zinc-900">
-              Trending on <span className="grad-text">Dime</span>
+              Trending on <span className="grad-text">Kore</span>
             </h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Every coin launched on Dime — its creator fees route to that fomo.family profile’s wallet.
+              Every coin launched on Kore — its creator fees route to that fomo.family profile’s wallet.
             </p>
           </div>
           <Link href="/leaderboard" className="hidden shrink-0 font-mono text-xs uppercase tracking-widest text-pink-soft hover:underline sm:inline">

@@ -3,7 +3,7 @@ import type { LaunchStrategy } from "./strategy";
 import type { PonsVersion, VersionInfo } from "./types";
 
 /**
- * Dime launches only on Pons. The strategy indirection is kept so
+ * Kore launches only on Pons. The strategy indirection is kept so
  * the UI, wallet layer and indexer never hardcode the write path — they ask the
  * active strategy to prepare the launch.
  */
