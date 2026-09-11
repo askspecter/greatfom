@@ -30,6 +30,9 @@ function cleanHandle(raw: string): string {
 export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }) {
   const { address } = useAccount();
 
+  // ── What kind of profile are we coining? ──
+  const [source, setSource] = useState<"fomo" | "x">("fomo");
+
   // ── Profile seed inputs ──
   const [handle, setHandle] = useState(cleanHandle(initialHandle));
   const [displayName, setDisplayName] = useState("");
@@ -129,6 +132,36 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
     }
   }
 
+  /**
+   * Pull an X (Twitter) profile: grab the avatar from a public avatar service
+   * and seed the coin name + X link from the handle. X profiles carry no
+   * on-chain wallet, so creator fees fall back to the connected wallet.
+   */
+  async function detectX() {
+    const h = cleanHandle(handle);
+    if (h.length < 1) {
+      setDetectError("Enter your X handle first.");
+      return;
+    }
+    setDetectError(null);
+    setDetecting(true);
+    try {
+      setFomo(null);
+      setFeeWallet(undefined);
+      setAvatar(`https://unavatar.io/x/${encodeURIComponent(h)}`);
+      setDisplayName((prev) => prev || `@${h}`);
+      setName((prev) => prev || h);
+      setDescription((prev) => prev || `@${h} on X, coined on Kore.`);
+      setTwitter((prev) => prev || `https://x.com/${h}`);
+    } catch {
+      setDetectError("Couldn't load that X profile.");
+    } finally {
+      setDetecting(false);
+    }
+  }
+
+  const detect = () => (source === "x" ? detectX() : detectProfile());
+
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -168,18 +201,47 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr,0.9fr]">
-      {/* ── Left: detect fomo.family profile + editable seed ── */}
+      {/* ── Left: choose a profile source + editable seed ── */}
       <section className="card p-5 sm:p-6">
         <div className="eyebrow">
-          <span className="step-badge">1</span> Your fomo.family profile
+          <span className="step-badge">1</span> Choose what to coin
         </div>
+
+        {/* Source toggle: Fomo profile or X profile */}
+        <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl border border-ink-line bg-white/40 p-1">
+          {([
+            { id: "fomo", label: "Fomo profile" },
+            { id: "x", label: "X profile" },
+          ] as const).map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => {
+                setSource(opt.id);
+                setDetectError(null);
+              }}
+              className={
+                "rounded-lg px-3 py-2 text-sm font-semibold transition " +
+                (source === opt.id
+                  ? "bg-pink text-white shadow-sm"
+                  : "text-zinc-500 hover:text-zinc-800")
+              }
+            >
+              {opt.id === "x" ? "𝕏 " : ""}
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         <p className="mt-3 text-sm text-zinc-600">
-          Drop your fomo.family handle and detect your profile. We pull your name, avatar and bio
-          straight from fomo.family, and route creator fees to your profile’s wallet. Everything stays
-          editable before you launch.
+          {source === "x"
+            ? "Drop your X handle and pull your profile. We grab your X avatar and prefill your coin — everything stays editable. X profiles have no on-chain wallet, so creator fees route to your connected wallet."
+            : "Drop your fomo.family handle and detect your profile. We pull your name, avatar and bio straight from fomo.family, and route creator fees to your profile’s wallet. Everything stays editable before you launch."}
         </p>
 
-        <label className="mt-5 block text-xs font-semibold text-zinc-500">Handle</label>
+        <label className="mt-5 block text-xs font-semibold text-zinc-500">
+          {source === "x" ? "X handle" : "Handle"}
+        </label>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-sm text-zinc-400">@</span>
           <input
@@ -190,9 +252,15 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
           />
         </div>
 
-        <button className="btn-brand mt-4 w-full" onClick={detectProfile} disabled={detecting}>
+        <button className="btn-brand mt-4 w-full" onClick={detect} disabled={detecting}>
           {detecting && <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
-          {detecting ? "Detecting…" : fomo ? "Re-detect profile" : "Detect my fomo.family profile"}
+          {detecting
+            ? "Detecting…"
+            : source === "x"
+              ? "Pull my X profile"
+              : fomo
+                ? "Re-detect profile"
+                : "Detect my fomo.family profile"}
         </button>
         {detectError && <p className="mt-2 text-xs text-red-600">{detectError}</p>}
         {fomo && (
