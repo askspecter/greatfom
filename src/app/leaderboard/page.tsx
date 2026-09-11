@@ -62,7 +62,7 @@ export default function LeaderboardPage() {
             <span className="grad-text">Leaderboard</span>
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
-            Top fomo.family traders, live from the FOMO API. Tokenize any profile and fees route to
+            Top fomo.family traders, live from the FOMO API. Coin any profile and fees route to
             their wallet.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function LeaderboardPage() {
                   href={`/create?handle=${encodeURIComponent(r.handle)}`}
                   className="btn-brand shrink-0 !px-3 !py-2 text-xs"
                 >
-                  Tokenize
+                  Coined
                 </Link>
               </div>
             );
