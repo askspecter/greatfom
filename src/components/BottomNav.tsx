@@ -57,7 +57,7 @@ export function BottomNav() {
           <img
             src="/kore-mark.png"
             alt="Kore"
-            className={`h-6 w-6 object-contain transition ${
+            className={`relative -top-[3px] h-6 w-6 object-contain transition ${
               active("/activity") ? "opacity-100" : "opacity-80 hover:opacity-100"
             }`}
           />
