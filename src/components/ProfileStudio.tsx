@@ -404,6 +404,9 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
         <div className="mt-1">
           <QuoteAssetSelect assets={quoteAssets} value={pairToken} onChange={setPairToken} />
         </div>
+        <p className="mt-1.5 text-[11px] text-zinc-400">
+          Pair against ETH or a real-world asset (RWA), stocks like NVDA, AAPL, TSLA or USDG.
+        </p>
 
         {/* Socials */}
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
