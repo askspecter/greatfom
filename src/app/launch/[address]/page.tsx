@@ -8,6 +8,7 @@ import { CurveTradeWidget } from "@/components/CurveTradeWidget";
 import { PriceChartV2 } from "@/components/PriceChartV2";
 import { ClaimFees } from "@/components/ClaimFees";
 import { TokenComments } from "@/components/TokenComments";
+import { ShareOnX } from "@/components/ShareOnX";
 import { explorerToken, explorerUrl } from "@/lib/chain";
 
 interface CurveData {
@@ -146,6 +147,12 @@ export default function ProfileCoinPage() {
               )}
             </div>
           </div>
+          <ShareOnX
+            name={data.name}
+            symbol={data.symbol}
+            token={data.token}
+            className="btn-glass ml-auto inline-flex shrink-0 items-center gap-2 !py-2.5"
+          />
         </div>
 
         {onCurve && data.curve && (

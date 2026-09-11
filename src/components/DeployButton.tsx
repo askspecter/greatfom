@@ -7,6 +7,7 @@ import { getStrategy, type LaunchInput } from "@/lib/pons";
 import { toOnchainLogo } from "@/lib/upload";
 import { v2TokenLaunchedEvent } from "@/lib/pons/abisV2";
 import { robinhoodChain, explorerTx } from "@/lib/chain";
+import { ShareOnX } from "@/components/ShareOnX";
 
 /**
  * Deploy path (Pons v2 only): the v2 strategy prepares a plan, the user's wallet
@@ -154,6 +155,16 @@ export function DeployButton({
           <a href="/" className="btn-ghost w-full">
             See it in the feed →
           </a>
+        )}
+        {tokenAddress && (
+          <ShareOnX
+            name={input.name}
+            symbol={input.ticker}
+            token={tokenAddress}
+            handle={handle}
+            label="Share on X →"
+            className="btn-glass inline-flex w-full items-center justify-center gap-2"
+          />
         )}
       </div>
     );
