@@ -1,0 +1,55 @@
+name: Deploy to Vercel (production)
+
+# Auto-deploys the site to Vercel on every push to main. This is an
+# alternative to Vercel's native Git integration — use it if that isn't
+# triggering. It no-ops safely until the three Vercel secrets are added:
+#   Settings → Secrets and variables → Actions → New repository secret
+#     VERCEL_TOKEN       (vercel.com/account/tokens)
+#     VERCEL_ORG_ID      (.vercel/project.json → "orgId", or Vercel project settings)
+#     VERCEL_PROJECT_ID  (.vercel/project.json → "projectId")
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Vercel secrets are configured
+        id: guard
+        env:
+          TOK: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$TOK" ]; then
+            echo "::notice::Vercel secrets not set — skipping deploy. Add VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID in repo Settings → Secrets to enable."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        if: steps.guard.outputs.ready == 'true'
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel env, build and deploy (production)
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
+          vercel build --prod --token "$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
