@@ -8,6 +8,7 @@ import { CurveTradeWidget } from "@/components/CurveTradeWidget";
 import { PriceChartV2 } from "@/components/PriceChartV2";
 import { ClaimFees } from "@/components/ClaimFees";
 import { TokenComments } from "@/components/TokenComments";
+import { PersonaChat } from "@/components/PersonaChat";
 import { ShareOnX } from "@/components/ShareOnX";
 import { explorerToken, explorerUrl } from "@/lib/chain";
 
@@ -178,6 +179,13 @@ export default function ProfileCoinPage() {
             marketCapUsd={data.marketCapUsd}
             marketCapEth={data.marketCapEth}
             quoteSymbol={data.pairToken && data.pairToken !== zeroAddress ? "quote" : "ETH"}
+          />
+          <PersonaChat
+            token={data.token}
+            name={data.name}
+            symbol={data.symbol}
+            description={data.description}
+            logo={data.logo}
           />
           <ClaimFees pairToken={pairToken} creator={data.creatorFeeRecipient as Address} />
           <TokenComments token={data.token as `0x${string}`} symbol={data.symbol} />
