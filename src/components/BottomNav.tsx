@@ -47,11 +47,11 @@ export function BottomNav() {
           </Link>
         ))}
 
-        {/* Center: the Kore logo as a prominent, button-sized tab */}
-        <Link href="/" aria-label="Kore home" className="flex flex-1 justify-center">
+        {/* Center: the Kore logo — opens the live buys feed */}
+        <Link href="/activity" aria-label="Live buys" className="flex flex-1 justify-center">
           <span
             className={`inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl ring-1 transition ${
-              pathname === "/" ? "ring-2 ring-[#7b5cff]/80" : "ring-white/10"
+              active("/activity") ? "ring-2 ring-[#7b5cff]/80" : "ring-white/10"
             }`}
             style={{ boxShadow: "0 12px 34px -10px rgba(123,92,255,0.75)" }}
           >

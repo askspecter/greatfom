@@ -286,6 +286,69 @@ export async function indexV2Launches(opts?: {
     .slice(0, limit);
 }
 
+// ── Live buys: recent CurveBuy events across curves ──────────────────────────
+
+export interface CurveBuyEvent {
+  curve: Address;
+  buyer: Address;
+  recipient: Address;
+  quoteIn: bigint;
+  tokensOut: bigint;
+  blockNumber: bigint;
+  logIndex: number;
+  txHash: `0x${string}`;
+}
+
+/**
+ * Index recent CurveBuy events across a set of bonding curves, newest first.
+ * The public RPC times out on wide ranges, so we scan back a bounded window in
+ * block chunks and stop once we have enough. Passing the curve set (from recent
+ * launches) keeps the log filter tight and the results to Kore launches only.
+ */
+export async function indexV2BuysForCurves(
+  curves: Address[],
+  opts?: { lookback?: bigint; chunk?: bigint; limit?: number },
+): Promise<CurveBuyEvent[]> {
+  if (curves.length === 0) return [];
+  const client = ponsClient();
+  const latest = await client.getBlockNumber();
+  const lookback = opts?.lookback ?? 150_000n;
+  const chunk = opts?.chunk ?? 10_000n;
+  const limit = opts?.limit ?? 40;
+  const start = latest > lookback ? latest - lookback : 0n;
+
+  const out: CurveBuyEvent[] = [];
+  for (let to = latest; to >= start; to -= chunk) {
+    const from = to - chunk + 1n > start ? to - chunk + 1n : start;
+    try {
+      const logs = await client.getLogs({ address: curves, event: v2CurveBuyEvent, fromBlock: from, toBlock: to });
+      for (const log of logs.reverse()) {
+        const a = log.args;
+        out.push({
+          curve: log.address as Address,
+          buyer: a.buyer as Address,
+          recipient: a.recipient as Address,
+          quoteIn: (a.quoteIn ?? 0n) as bigint,
+          tokensOut: (a.tokensOut ?? 0n) as bigint,
+          blockNumber: log.blockNumber ?? 0n,
+          logIndex: Number(log.logIndex ?? 0),
+          txHash: log.transactionHash ?? "0x",
+        });
+      }
+    } catch {
+      // RPC hiccup on this chunk — skip and keep scanning.
+    }
+    if (out.length >= limit) break;
+    if (from === start) break;
+  }
+
+  return out
+    .sort((x, y) =>
+      y.blockNumber > x.blockNumber ? 1 : y.blockNumber < x.blockNumber ? -1 : y.logIndex - x.logIndex,
+    )
+    .slice(0, limit);
+}
+
 // ── Chart: bonding-curve trade history ───────────────────────────────────────
 
 export interface CurveTradePoint {
