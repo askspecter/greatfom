@@ -20,7 +20,7 @@ export function SiteFooter() {
   const links = [...PRODUCT, ...LEGAL];
 
   return (
-    <footer className="mt-16 px-4 pb-8">
+    <footer className="mt-16 px-4 pb-28 md:pb-8">
       <div className="mx-auto max-w-6xl card p-6 sm:p-8">
         <div className="flex items-center gap-2">
           <Logo className="h-7 w-7" />

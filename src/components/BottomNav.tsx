@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Logo } from "./Logo";
 
 /**
  * Mobile bottom tab bar — the app-style navigation matching fomo.family's
@@ -47,16 +46,19 @@ export function BottomNav() {
           </Link>
         ))}
 
-        {/* Center: the Kore logo — opens the live buys feed. Same size as the
-            other tabs, clean, no elevated glow box. */}
+        {/* Center: the Kore mark — opens the live buys feed. Same box + size as
+            the other tabs, aligned. */}
         <Link
           href="/activity"
           aria-label="Live buys"
           className="flex flex-1 flex-col items-center gap-0.5 py-1"
         >
-          <Logo
-            className={`h-7 w-7 rounded-lg transition ${
-              active("/activity") ? "opacity-100" : "opacity-90 hover:opacity-100"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/kore-mark.png"
+            alt="Kore"
+            className={`h-6 w-6 object-contain transition ${
+              active("/activity") ? "opacity-100" : "opacity-80 hover:opacity-100"
             }`}
           />
         </Link>
