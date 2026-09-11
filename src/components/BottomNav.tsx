@@ -47,16 +47,18 @@ export function BottomNav() {
           </Link>
         ))}
 
-        {/* Center: the Kore logo — opens the live buys feed */}
-        <Link href="/activity" aria-label="Live buys" className="flex flex-1 justify-center">
-          <span
-            className={`inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl ring-1 transition ${
-              active("/activity") ? "ring-2 ring-[#7b5cff]/80" : "ring-white/10"
+        {/* Center: the Kore logo — opens the live buys feed. Same size as the
+            other tabs, clean, no elevated glow box. */}
+        <Link
+          href="/activity"
+          aria-label="Live buys"
+          className="flex flex-1 flex-col items-center gap-0.5 py-1"
+        >
+          <Logo
+            className={`h-7 w-7 rounded-lg transition ${
+              active("/activity") ? "opacity-100" : "opacity-90 hover:opacity-100"
             }`}
-            style={{ boxShadow: "0 12px 34px -10px rgba(123,92,255,0.75)" }}
-          >
-            <Logo className="h-full w-full" />
-          </span>
+          />
         </Link>
 
         {TABS.slice(2).map((t) => (

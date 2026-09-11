@@ -5,8 +5,8 @@ export const SITE = {
   tagline: "Coined your fomo profile.",
   description:
     "Turn your fomo.family profile into a token. Kore drafts your profile coin and launches it on the Pons bonding curve on Robinhood Chain, non-custodial. Your wallet signs every transaction.",
-  x: "https://x.com/korefamily",
-  xHandle: "@korefamily",
+  x: "https://x.com/koredotfamily",
+  xHandle: "@koredotfamily",
   company: "Kore",
   chain: "Robinhood Chain",
   poweredBy: "Pons",
