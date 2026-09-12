@@ -405,7 +405,8 @@ export function ProfileStudio({ initialHandle = "" }: { initialHandle?: string }
           <QuoteAssetSelect assets={quoteAssets} value={pairToken} onChange={setPairToken} />
         </div>
         <p className="mt-1.5 text-[11px] text-zinc-400">
-          Pair against ETH or a real-world asset (RWA), stocks like NVDA, AAPL, TSLA or USDG.
+          Pair against ETH, an RWA (NVDA, AAPL, TSLA, USDG…), or paste any Robinhood Chain token
+          address to pair against it.
         </p>
 
         {/* Socials */}
