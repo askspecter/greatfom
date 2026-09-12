@@ -179,15 +179,15 @@ export default function KoreDashboard() {
             <div className="ink-sheen mt-1 font-display text-2xl font-extrabold sm:text-3xl">{mc}</div>
           </div>
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">24h volume</div>
-            <div className="mt-1 font-display text-2xl font-extrabold text-zinc-900 sm:text-3xl">
-              {holders?.volume24h != null ? usd(holders.volume24h) : "—"}
-            </div>
-          </div>
-          <div>
             <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">Holders</div>
             <div className="mt-1 font-display text-2xl font-extrabold text-zinc-900 sm:text-3xl">
               {holders?.holdersCount != null ? holders.holdersCount.toLocaleString() : "—"}
+            </div>
+          </div>
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">Burned</div>
+            <div className="mt-1 font-display text-2xl font-extrabold sm:text-3xl" style={{ color: "#ff9d5c" }}>
+              {burned ? `${burned.pct >= 0.01 ? burned.pct.toFixed(2) : burned.pct.toFixed(3)}%` : "—"}
             </div>
           </div>
         </div>
@@ -259,8 +259,8 @@ export default function KoreDashboard() {
       </div>
 
       <p className="mt-4 px-1 text-xs leading-relaxed text-zinc-500">
-        USD estimates at current asset rates. Holder counts and balances are read live from the
-        Robinhood Chain explorer. ETH payouts to holders are coming soon; today, value returns to
+        USD estimates at current asset rates. Holder counts and balances are computed live from
+        on-chain Transfer history. ETH payouts to holders are coming soon; today, value returns to
         holders through on-chain buybacks and burns.
       </p>
     </div>

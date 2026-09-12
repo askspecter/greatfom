@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { isAddress, type Address } from "viem";
-import { explorerUrl } from "@/lib/chain";
+import { isAddress, parseAbiItem, parseAbi, type Address } from "viem";
+import { ponsClient } from "@/lib/pons/reader";
 import { SITE } from "@/lib/site";
 import { getKv } from "@/lib/kv";
 
@@ -10,38 +10,16 @@ export const revalidate = 0;
 
 /**
  * GET /api/kore/holders?token=0x..
- * Real holder stats for a token, read from the Blockscout explorer:
- * holder count, 24h transfer volume (when the explorer exposes it) and the
- * top holders (address + balance + % of supply). Defaults to $KORE.
- *
- * Best-effort and KV-cached: if the explorer is unreachable or rate-limited,
- * returns nulls/empty so the dashboard degrades gracefully instead of erroring.
+ * Real holder stats for a token, computed straight from on-chain Transfer logs
+ * via RPC (the Blockscout explorer sits behind a bot wall and is unreliable
+ * server-side). Returns holder count, total supply, and the top holders
+ * (address + balance + % of supply). Defaults to $KORE. KV-cached.
  */
-const TTL = 60;
+const TTL = 180;
 const DEAD = "0x000000000000000000000000000000000000dead";
 const ZERO = "0x0000000000000000000000000000000000000000";
-
-interface Holder {
-  address: string;
-  value: number;
-  pct: number;
-  isBurn: boolean;
-}
-
-async function j(url: string): Promise<Record<string, unknown> | null> {
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 12_000);
-    const res = await fetch(url, { headers: { accept: "application/json" }, cache: "no-store", signal: ctrl.signal });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    const ct = res.headers.get("content-type") ?? "";
-    if (!ct.includes("application/json")) return null; // Cloudflare challenge page, etc.
-    return (await res.json()) as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-}
+const TRANSFER = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
+const erc20 = parseAbi(["function totalSupply() view returns (uint256)", "function decimals() view returns (uint8)"]);
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -50,7 +28,7 @@ export async function GET(req: Request) {
   const token = (raw as Address).toLowerCase();
 
   const kv = getKv();
-  const key = `holders:${token}`;
+  const key = `holders:v2:${token}`;
   if (kv) {
     try {
       const hit = await kv.get(key);
@@ -58,41 +36,49 @@ export async function GET(req: Request) {
     } catch {}
   }
 
-  const base = explorerUrl.replace(/\/+$/, "");
-  const info = await j(`${base}/api/v2/tokens/${token}`);
-  const holdersRaw = await j(`${base}/api/v2/tokens/${token}/holders?limit=25`);
+  try {
+    const client = ponsClient();
+    const [decRaw, supplyRaw, logs] = await Promise.all([
+      client.readContract({ address: token as Address, abi: erc20, functionName: "decimals" }).catch(() => 18) as Promise<number>,
+      client.readContract({ address: token as Address, abi: erc20, functionName: "totalSupply" }).catch(() => 0n) as Promise<bigint>,
+      client.getLogs({ address: token as Address, event: TRANSFER, fromBlock: 0n, toBlock: "latest" }),
+    ]);
+    const decimals = Number(decRaw) || 18;
+    const denom = 10 ** decimals;
 
-  const decimals = Number(info?.decimals ?? 18) || 18;
-  const supplyRaw = typeof info?.total_supply === "string" ? Number(info.total_supply) : null;
-  const supply = supplyRaw != null ? supplyRaw / 10 ** decimals : null;
-  const holdersCount =
-    typeof info?.holders === "string" ? Number(info.holders) : typeof info?.holders_count === "string" ? Number(info.holders_count) : null;
-  const volume24h = typeof info?.volume_24h === "string" ? Number(info.volume_24h) : null;
+    // Tally net balance per address from the full transfer history.
+    const bal = new Map<string, bigint>();
+    for (const l of logs) {
+      const from = (l.args.from ?? ZERO).toLowerCase();
+      const to = (l.args.to ?? ZERO).toLowerCase();
+      const v = (l.args.value ?? 0n) as bigint;
+      if (from !== ZERO) bal.set(from, (bal.get(from) ?? 0n) - v);
+      bal.set(to, (bal.get(to) ?? 0n) + v);
+    }
 
-  const items = Array.isArray(holdersRaw?.items) ? (holdersRaw!.items as Record<string, unknown>[]) : [];
-  const top: Holder[] = items
-    .map((it) => {
-      const addr = String(((it.address as Record<string, unknown>)?.hash as string) ?? it.address ?? "").toLowerCase();
-      const value = Number(it.value ?? 0) / 10 ** decimals;
-      const pct = supply && supply > 0 ? (value / supply) * 100 : 0;
-      const isBurn = addr === DEAD || addr === ZERO;
-      return { address: addr, value, pct, isBurn };
-    })
-    .filter((h) => h.address);
+    const supply = supplyRaw > 0n ? Number(supplyRaw) / denom : null;
+    const entries = [...bal.entries()].filter(([a, v]) => v > 0n && a !== ZERO);
+    // Real holders exclude the burn sinks (dead / zero).
+    const holdersCount = entries.filter(([a]) => a !== DEAD).length;
 
-  const payload = {
-    token,
-    holdersCount,
-    supply,
-    volume24h,
-    top,
-    source: info || holdersRaw ? "blockscout" : "unavailable",
-  };
+    const top = entries
+      .sort((a, b) => (b[1] > a[1] ? 1 : b[1] < a[1] ? -1 : 0))
+      .slice(0, 25)
+      .map(([address, vRaw]) => {
+        const value = Number(vRaw) / denom;
+        const pct = supply && supply > 0 ? (value / supply) * 100 : 0;
+        return { address, value, pct, isBurn: address === DEAD || address === ZERO };
+      });
 
-  if (kv && (info || holdersRaw)) {
-    try {
-      await kv.set(key, payload, { ex: TTL });
-    } catch {}
+    const payload = { token, holdersCount, supply, volume24h: null, top, source: "onchain" };
+    if (kv) {
+      try {
+        await kv.set(key, payload, { ex: TTL });
+      } catch {}
+    }
+    return NextResponse.json(payload);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to read holders on-chain.";
+    return NextResponse.json({ token, holdersCount: null, supply: null, volume24h: null, top: [], source: "unavailable", error: message });
   }
-  return NextResponse.json(payload);
 }
