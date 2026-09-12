@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { Logo } from "@/components/Logo";
+import { PayoutChecker } from "@/components/PayoutChecker";
 import { explorerToken, explorerUrl } from "@/lib/chain";
 
 interface Price {
@@ -163,6 +164,11 @@ export default function KoreDashboard() {
             For now, value routes to holders through buybacks and burns above.
           </p>
         </div>
+      </div>
+
+      {/* Payout checker */}
+      <div className="mt-5">
+        <PayoutChecker token={ca} />
       </div>
 
       {/* Stat row */}
