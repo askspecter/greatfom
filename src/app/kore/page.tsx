@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { Logo } from "@/components/Logo";
 import { PayoutChecker } from "@/components/PayoutChecker";
+import { PayoutCountdown } from "@/components/PayoutCountdown";
 import { explorerToken, explorerUrl } from "@/lib/chain";
 
 interface Price {
@@ -151,17 +152,20 @@ export default function KoreDashboard() {
           />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-500">
-              ETH payouts to holders
+              <span className="pulse-dot" style={{ background: "#4ef0a3", boxShadow: "0 0 0 4px rgba(78,240,163,0.22)" }} />
+              ETH payout · Round 1 in
             </div>
             <span className="rounded-full border border-[rgba(78,240,163,0.35)] bg-[rgba(78,240,163,0.1)] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: "#7ef0b8" }}>
-              Soon
+              Round 1
             </span>
           </div>
-          <div className="mt-2 font-display text-5xl font-extrabold text-zinc-900">Coming soon</div>
-          <div className="mt-1 font-mono text-sm text-zinc-500">Direct ETH rewards, per round</div>
+          <div className="mt-3">
+            <PayoutCountdown />
+          </div>
+          <div className="mt-1 font-mono text-sm text-zinc-500">Direct ETH to holders, by share of supply</div>
           <p className="mt-5 border-t border-ink-line pt-4 text-xs leading-relaxed text-zinc-500">
-            We are building automatic ETH payouts to $KORE holders, swept and distributed each round.
-            For now, value routes to holders through buybacks and burns above.
+            Round 1 sweeps and distributes ETH to $KORE holders by their share of supply. Hold before
+            the countdown ends to be included. Value also returns to holders through buybacks and burns.
           </p>
         </div>
       </div>
